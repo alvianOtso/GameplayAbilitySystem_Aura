@@ -84,9 +84,10 @@ void AAuraPlayerController::BeginPlay()
 	check(AuraContext); // check will assert the aura context and if fail aura context never be set
 	
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem); // if check get false then the program will crash here, and it's different with if statement
-
-	Subsystem->AddMappingContext(AuraContext, 0);
+	if (Subsystem)
+	{
+		Subsystem->AddMappingContext(AuraContext, 0);
+	}
 
 	bShowMouseCursor = true; // display the cursor because it's top-down view
 	DefaultMouseCursor = EMouseCursor::Default;
