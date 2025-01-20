@@ -13,6 +13,42 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+USTRUCT()
+struct FEffectProperties
+{
+	GENERATED_BODY()
+
+	FEffectProperties() {};
+	
+	FGameplayEffectContextHandle EffectContextHandle;
+
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> SourceASC = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<AActor> SourceAvatarActor = nullptr;
+	
+	UPROPERTY()
+	TObjectPtr<AController> SourceController = nullptr;
+	
+	UPROPERTY()
+	TObjectPtr<ACharacter> SourceCharacter = nullptr;
+	
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> TargetASC = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<AActor> TargetAvatarActor = nullptr;
+	
+	UPROPERTY()
+	TObjectPtr<AController> TargetController = nullptr;
+	
+	UPROPERTY()
+	TObjectPtr<ACharacter> TargetCharacter = nullptr;
+	
+};
+
+
 /**
  * 
  */
@@ -25,6 +61,11 @@ public:
 	UAuraAttributeSet();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override; // func for mark variable to replicated
+	
+	/** if attribute get change because gameplay effect or set directly from function.then this function will kick off before the change occurs*/
+	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
+
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes") // OnRep_Health is notifying for replicated Health, and It's for mark variable to replicated
 	FGameplayAttributeData Health;
@@ -52,8 +93,12 @@ public:
 	void OnRep_Mana(const FGameplayAttributeData& OldMana) const; 
 
 	UFUNCTION()
-	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const; 
+	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
+
+private:
+	void SetEffectProperties(const struct FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 };
+
 
 
 
