@@ -37,11 +37,10 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 
 	/** Create FGameplayEffectSpecHandle for wrapper that handle effect spec*/
 	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContextHandle);
-
-	/** EffectSpecHandle have a Data that storing FGameplayEffectSpec pointer then call Get() to get raw pointer.
-	 * Then direfference that pointer using '*'
+	
+	/** EffectSpecHandle is already wrap the pointer using TSharedPtr so we can avoid chain .Get() function
+	 * ApplyGameplayEffectSpecToSelf 
 	 */
-	/** EffectSpecHandle is already wrap the pointer using TSharedPtr so we can avoid chain .Get() function*/
 	const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
 
 	/* first solution
