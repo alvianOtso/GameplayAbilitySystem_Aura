@@ -47,6 +47,10 @@ struct FEffectProperties
 	ACharacter* TargetCharacter = nullptr;
 };
 
+// typedef is specific to the FGameplayAttribute() signature, but TStaticFuncPtr is generic to any signature
+// typedef TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr FAttributeFuncPtr; // alias 
+template<class T>
+using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr; // template function pointer
 
 /**
  * 
@@ -66,6 +70,11 @@ public:
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+	// TBaseStaticDelegateInstance is a static function for delegate, and FFuncPtr is alias from kind of func.See the declaration and usages
+	// the return from TBaseStaticDelegateInstance is FGameplayAttribute()
+	// or can use  FGameplayAttribute(*)() and TStaticFuncPtr<FGameplayAttribute()> this instead
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes; 
+	
 	/**
 	 * Primary Attributes
 	 */
